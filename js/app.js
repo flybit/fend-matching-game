@@ -46,23 +46,68 @@ function createDeck() {
     return ul;
 }
 
+const stars = (function() {
+    // Private members
+    let stars = 3;
+    const TWO_STAR_THRESHOLD = 50;
+    const ONE_STAR_THRESHOLD = 100;
+    const container = document.querySelector('.stars');
+
+    function render() {
+        // Remove all children of the ul element
+        while (container.lastChild) {
+            container.lastChild.remove();
+        }
+
+        // Add as many stars as needed
+        for (let i = 0; i < stars; ++i) {
+            const li = document.createElement('li');
+            const star = document.createElement('i');
+            star.classList.add('fa', 'fa-star');
+            li.appendChild(star);
+            container.appendChild(li);
+        }
+    }
+
+    return {
+        update(moves) {
+            if (moves >= ONE_STAR_THRESHOLD) {
+                stars = 1;
+            } else if (moves >= TWO_STAR_THRESHOLD) {
+                stars = 2;
+            } else {
+                stars = 3;
+            }
+            render();
+        },
+        get() {
+            return stars;
+        }
+    };
+})();
+
 const moves = (function() {
     // Private members
     let moves = 0;
-    const domElement = document.querySelector('.moves');
+    const container = document.querySelector('.moves');
 
     function render() {
-        domElement.textContent = moves;
+        container.textContent = moves;
+    }
+
+    function update() {
+        stars.update(moves);
+        render();
     }
 
     return {
         increment() {
             ++moves;
-            render();
+            update();
         },
         reset() {
             moves = 0;
-            render();
+            update();
         },
         get() {
             return moves;
