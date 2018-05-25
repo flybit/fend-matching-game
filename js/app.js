@@ -42,9 +42,30 @@ function createDeck() {
     // Append it to the container div
     const container = document.querySelector('div.container');
     container.appendChild(ul);
+
+    return ul;
 }
 
-createDeck();
+
+// Click handler
+function clickHandler(e) {
+    const c = e.target;
+    if (c.nodeName !== 'LI') {
+        return;
+    }
+    c.classList.add('open', 'show');
+}
+
+// match, open show
+
+function main() {
+    // Create the deck
+    const deck = createDeck();
+    deck.addEventListener('click', clickHandler);
+}
+
+main();
+
 
 /*
  * set up the event listener for a card. If a card is clicked:
