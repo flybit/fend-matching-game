@@ -202,11 +202,15 @@ function clickHandler(e) {
         }, 750);
     }
 
-    // Display a message if all cards have matched
+    // Display a modal if all cards have matched
     if (document.querySelectorAll('.card.match').length === 16) {
+        // Stop the clock
         clock.stop();
-        const msg = `Congratulations you have matched all cards in ${clock.getElapsedTime()} seconds and you won ${stars.get()} stars!`;
-        setTimeout(() => alert(msg), 100);
+        // Set contents of the dialog
+        document.querySelector('.modal .total-time').textContent = clock.getElapsedTime();
+        document.querySelector('.modal .stars').textContent = stars.get();
+        // Show
+        setTimeout(() => document.querySelector('.modal').showModal(), 200);
     }
 }
 
@@ -226,7 +230,16 @@ function reset() {
 
 function main() {
     reset();
+    // Restart button
     document.querySelector('.restart').addEventListener('click', reset);
+    const modal = document.querySelector('.modal');
+    // Yes button in the modal dialog
+    document.querySelector('.modal-buttons .yes-button').addEventListener('click', () => {
+        modal.close();
+        reset();
+    });
+    // No button in the modal dialog
+    document.querySelector('.modal-buttons .no-button').addEventListener('click', () => modal.close());
 }
 
 // Start
