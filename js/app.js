@@ -46,6 +46,29 @@ function createDeck() {
     return ul;
 }
 
+const moves = (function() {
+    // Private members
+    let moves = 0;
+    const domElement = document.querySelector('.moves');
+
+    function render() {
+        domElement.textContent = moves;
+    }
+
+    return {
+        increment() {
+            ++moves;
+            render();
+        },
+        reset() {
+            moves = 0;
+            render();
+        },
+        get() {
+            return moves;
+        }
+    };
+})();
 
 // Click handler
 function clickHandler(e) {
@@ -53,6 +76,17 @@ function clickHandler(e) {
     if (c.nodeName !== 'LI') {
         return;
     }
+    // Return early if this card is already matched
+    if (c.classList.contains('match')) {
+        return;
+    }
+    // Return early if this cars if already opened
+    if (c.classList.contains('show')) {
+        return;
+    }
+    // Increment moves
+    moves.increment();
+    // Open this card
     c.classList.add('open', 'show');
 }
 
@@ -61,6 +95,8 @@ function clickHandler(e) {
 function main() {
     // Create the deck
     const deck = createDeck();
+    // Reset the moves counter
+    moves.reset();
     deck.addEventListener('click', clickHandler);
 }
 
