@@ -16,6 +16,22 @@ function shuffle(array) {
     return array;
 }
 
+// Create the deck of cards
+function createDeck() {
+    // Create the ul element and add 'deck' class
+    const ul = document.createElement('ul');
+    ul.classList.add('deck');
+
+    // Prep a fresh flat list of cards (shuffled and duplicated)
+    const cards = shuffle([...cardTypes, ...cardTypes]);
+
+    // Add a li element for each card under the ul element
+    cards.forEach(c => createCard(c, ul));
+
+    // Append it to the container div
+    const container = document.querySelector('div.container');
+    container.appendChild(ul);
+}
 
 /*
  * set up the event listener for a card. If a card is clicked:
