@@ -45,18 +45,38 @@ function createDeck() {
 
 const clock = (function() {
     // Private members
-    let startTime;
-    let endTime;
+    let elapsedTime;
+    let interval;
+    const container = document.querySelector('.timer');
+
+    function render() {
+        container.textContent = elapsedTime;
+    }
+
+    function intervalCallback() {
+        ++elapsedTime;
+        render();
+    }
+
+    function _clearInterval() {
+        if (interval) {
+            clearInterval(interval);
+            interval = undefined;
+        }
+    }
 
     return {
+        start() {
+            _clearInterval();
+            elapsedTime = 0;
+            render();
+            interval = setInterval(intervalCallback, 1000);
+        },
         stop() {
-            endTime = performance.now();
+            _clearInterval();
         },
         getElapsedTime() {
-            return ((endTime - startTime)/1000).toFixed(0);
-        },
-        reset() {
-            startTime = performance.now();
+            return elapsedTime;
         }
     };
 })();
@@ -152,6 +172,7 @@ function clickHandler(e) {
     if (c.classList.contains('show')) {
         return;
     }
+
     // Increment moves
     moves.increment();
     // Open this card
@@ -162,7 +183,8 @@ function clickHandler(e) {
     if (openCards.length !== 2) {
         return;
     }
-    // Get the classes of the open card - to use for matching
+
+    // Get the classes of the open cards - to use for matching
     const openCardClassLists = [];
     for (const c of openCards) {
         openCardClassLists.push(c.firstElementChild.classList);
@@ -179,6 +201,7 @@ function clickHandler(e) {
             openCards.forEach(e => e.classList.remove('open', 'show'));
         }, 750);
     }
+
     // Display a message if all cards have matched
     if (document.querySelectorAll('.card.match').length === 16) {
         clock.stop();
@@ -188,6 +211,7 @@ function clickHandler(e) {
 }
 
 function reset() {
+    // Remove the deck if it is already there
     const deck = document.querySelector('.deck');
     if (deck) {
         deck.remove();
@@ -197,7 +221,7 @@ function reset() {
     // Reset the moves counter
     moves.reset();
     // Reset the clock
-    clock.reset();
+    clock.start();
 }
 
 function main() {
@@ -205,16 +229,5 @@ function main() {
     document.querySelector('.restart').addEventListener('click', reset);
 }
 
+// Start
 main();
-
-
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
