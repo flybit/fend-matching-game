@@ -16,6 +16,18 @@ function shuffle(array) {
     return array;
 }
 
+// Create the li element for each card and
+// append it to the parent element
+function createCard(type, parentElement) {
+    const li = document.createElement('li');
+    li.classList.add('card');
+    const childEl = document.createElement('i');
+    childEl.classList.add('fa');
+    childEl.classList.add(type);
+    li.appendChild(childEl);
+    parentElement.appendChild(li);
+}
+
 // Create the deck of cards
 function createDeck() {
     // Create the ul element and add 'deck' class
