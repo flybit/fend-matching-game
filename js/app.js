@@ -22,8 +22,7 @@ function createCard(type, parentElement) {
     const li = document.createElement('li');
     li.classList.add('card');
     const childEl = document.createElement('i');
-    childEl.classList.add('fa');
-    childEl.classList.add(type);
+    childEl.classList.add('fa', type);
     li.appendChild(childEl);
     parentElement.appendChild(li);
 }
