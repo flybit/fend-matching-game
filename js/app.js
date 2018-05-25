@@ -71,8 +71,15 @@ const moves = (function() {
 })();
 
 // Click handler
+let clickHandlerDisabled = false;
 function clickHandler(e) {
+    // Return early if click handler is disabled
+    if (clickHandlerDisabled) {
+        return;
+    }
+    // Get the target element
     const c = e.target;
+    // Return early if this click is not on a card
     if (c.nodeName !== 'LI') {
         return;
     }
@@ -88,9 +95,35 @@ function clickHandler(e) {
     moves.increment();
     // Open this card
     c.classList.add('open', 'show');
+    // Get all open cards
+    const openCards = document.querySelectorAll('.card.open.show');
+    // Return early if this is the only open card
+    if (openCards.length !== 2) {
+        return;
+    }
+    // Get the classes of the open card - to use for matching
+    const openCardClassLists = [];
+    for (const c of openCards) {
+        openCardClassLists.push(c.firstElementChild.classList);
+    }
+    // Mark the cards as matched if they are the same
+    if (openCardClassLists[0].value == openCardClassLists[1].value) {
+        openCards.forEach(e => e.classList.add('match'));
+        openCards.forEach(e => e.classList.remove('open', 'show'));
+    } else {
+        // Disable the click handler until we remove the open and show classes
+        clickHandlerDisabled = true;
+        setTimeout(() => {
+            clickHandlerDisabled = false;
+            openCards.forEach(e => e.classList.remove('open', 'show'));
+        }, 750);
+    }
+    // Display a message if all cards have matched
+    if (document.querySelectorAll('.card.match').length === 16) {
+        const msg = `Congratulations you have matched all cards in ${getTime()} seconds and you won ${stars.get()} stars!`;
+        alert(msg);
+    }
 }
-
-// match, open show
 
 function main() {
     // Create the deck
