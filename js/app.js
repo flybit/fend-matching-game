@@ -32,23 +32,20 @@ function createDeck() {
     // Create the ul element and add 'deck' class
     const ul = document.createElement('ul');
     ul.classList.add('deck');
-
     // Prep a fresh flat list of cards (shuffled and duplicated)
     const cards = shuffle([...cardTypes, ...cardTypes]);
-
     // Add a li element for each card under the ul element
     cards.forEach(c => createCard(c, ul));
-
+    // Register event listener
+    ul.addEventListener('click', clickHandler);
     // Append it to the container div
     const container = document.querySelector('div.container');
     container.appendChild(ul);
-
-    return ul;
 }
 
 const clock = (function() {
     // Private members
-    const startTime = performance.now();
+    let startTime;
     let endTime;
 
     return {
@@ -57,6 +54,9 @@ const clock = (function() {
         },
         getElapsedTime() {
             return ((endTime - startTime)/1000).toFixed(0);
+        },
+        reset() {
+            startTime = performance.now();
         }
     };
 })();
@@ -187,12 +187,22 @@ function clickHandler(e) {
     }
 }
 
-function main() {
+function reset() {
+    const deck = document.querySelector('.deck');
+    if (deck) {
+        deck.remove();
+    }
     // Create the deck
-    const deck = createDeck();
+    createDeck();
     // Reset the moves counter
     moves.reset();
-    deck.addEventListener('click', clickHandler);
+    // Reset the clock
+    clock.reset();
+}
+
+function main() {
+    reset();
+    document.querySelector('.restart').addEventListener('click', reset);
 }
 
 main();
