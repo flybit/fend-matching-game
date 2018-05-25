@@ -46,6 +46,22 @@ function createDeck() {
     return ul;
 }
 
+const clock = (function() {
+    // Private members
+    const startTime = performance.now();
+    let endTime;
+
+    return {
+        stop() {
+            endTime = performance.now();
+        },
+        getElapsedTime() {
+            return ((endTime - startTime)/1000).toFixed(0);
+        }
+    };
+})();
+
+
 const stars = (function() {
     // Private members
     let stars = 3;
@@ -165,8 +181,9 @@ function clickHandler(e) {
     }
     // Display a message if all cards have matched
     if (document.querySelectorAll('.card.match').length === 16) {
-        const msg = `Congratulations you have matched all cards in ${getTime()} seconds and you won ${stars.get()} stars!`;
-        alert(msg);
+        clock.stop();
+        const msg = `Congratulations you have matched all cards in ${clock.getElapsedTime()} seconds and you won ${stars.get()} stars!`;
+        setTimeout(() => alert(msg), 100);
     }
 }
 
